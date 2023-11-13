@@ -488,6 +488,34 @@ def list_users() -> List[str]:
     return users.questions
 
 
+def list_admins() -> List[str]:
+    """
+    **Example:**
+    ```python
+    admins = vn.list_admins(model="my-model")
+    ```
+
+    List the admins in a model.
+
+    Args:
+        model (str): The name of the model to list the admins for.
+
+    Returns:
+        List[str]: A list of emails.
+    """
+
+    params = []
+
+    d = __rpc_call(method="list_org_admins", params=params)
+
+    if "result" not in d:
+        return []
+
+    users = QuestionStringList(**d["result"])
+
+    return users.questions
+
+
 def update_model_visibility(public: bool) -> bool:
     """
     **Example:**
