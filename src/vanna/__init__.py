@@ -428,6 +428,66 @@ def add_user_to_model(model: str, email: str, is_admin: bool) -> bool:
     return status.success
 
 
+def remove_user_from_model(model: str, email: str) -> bool:
+    """
+    **Example:**
+    ```python
+    vn.remove_user_from_model(model="my-model", email="user@example.com")
+    ```
+
+    Remove a user from an model.
+
+    Args:
+        model (str): The name of the model to remove the user from.
+        email (str): The email address of the user to remove.
+
+    Returns:
+        bool: True if the user was removed successfully, False otherwise.
+    """
+
+    params = [NewOrganizationMember(org_name=model, email=email, is_admin=False)]
+
+    d = __rpc_call(method="remove_user_from_org", params=params)
+
+    if "result" not in d:
+        return False
+
+    status = Status(**d["result"])
+
+    if not status.success:
+        print(status.message)
+
+    return status.success
+
+
+def list_users() -> List[str]:
+    """
+    **Example:**
+    ```python
+    users = vn.list_users(model="my-model")
+    ```
+
+    List the users in a model.
+
+    Args:
+        model (str): The name of the model to list the users for.
+
+    Returns:
+        List[str]: A list of emails.
+    """
+
+    params = []
+
+    d = __rpc_call(method="list_org_members", params=params)
+
+    if "result" not in d:
+        return []
+
+    users = QuestionStringList(**d["result"])
+
+    return users.questions
+
+
 def update_model_visibility(public: bool) -> bool:
     """
     **Example:**
